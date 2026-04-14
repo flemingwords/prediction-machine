@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Political Prediction Engine — PolSci Pro 3000</title>
+  <meta name="description" content="Enter your polling data. Receive wisdom." />
+  <meta property="og:title" content="Political Prediction Engine" />
+  <meta property="og:description" content="47 proprietary models. Advanced AI. Vibes. Enter your data and receive a prediction." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f3ee;
+      --surface: #ffffff;
+      --surface2: #f0ede6;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.18);
+      --text: #1a1814;
+      --text-muted: #6b6760;
+      --text-faint: #9e9b96;
+      --accent: #2a3d8f;
+      --accent-light: #e8ecf7;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-strong);
+      padding-bottom: 1.25rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    .field {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      margin-bottom: 10px;
+      transition: border-color 0.15s;
+    }
+
+    .field:hover { border-color: var(--border-strong); }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .field label span {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 3px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    select, input[type="number"], textarea {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    select:focus, input[type="number"]:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+
+    .field-label-plain {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .compute-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compute-btn:hover { opacity: 0.9; }
+    .compute-btn:active { transform: scale(0.99); }
+    .compute-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .result {
+      display: none;
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .result-main {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .result-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-faint);
+      font-family: 'DM Mono', monospace;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .share-row {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .share-btn:hover { background: var(--surface2); color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="badge">POLSCI PRO 3000</div>
+      <h1>Political Prediction Engine</h1>
+      <p class="subtitle">Powered by advanced AI, 47 proprietary models, and vibes.</p>
+    </div>
+
+    <div class="field">
+      <label>Candidate favorability (%) <span id="fav-val">52</span></label>
+      <input type="range" min="0" max="100" value="52" step="1" oninput="document.getElementById('fav-val').textContent=this.value" />
+    </div>
+
+    <div class="field">
+      <label>Generic ballot margin (pts) <span id="ballot-val">+3</span></label>
+      <input type="range" min="-20" max="20" value="3" step="1" oninput="document.getElementById('ballot-val').textContent=(this.value>=0?'+':'')+this.value" />
+    </div>
+
+    <div class="field">
+      <label class="field-label-plain">Top voter issue</label>
+      <select>
+        <option>Economy / inflation</option>
+        <option>Healthcare</option>
+        <option>Immigration</option>
+        <option>Climate</option>
+        <option>Crime</option>
+        <option>Democracy / elections</option>
+        <option>Education</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Incumbent approval (%) <span id="app-val">44</span></label>
+      <input type="range" min="20" max="80" value="44" step="1" oninput="document.getElementById('app-val').textContent=this.value" />
+    </div>
+
+    <div class="field">
+      <label class="field-label-plain">Days until election</label>
+      <input type="number" value="180" min="1" max="730" />
+    </div>
+
+    <div class="field">
+      <label class="field-label-plain">Your question for the model</label>
+      <textarea placeholder="e.g. What are the odds of a Senate flip?"></textarea>
+    </div>
+
+    <button class="compute-btn" id="compute-btn" onclick="runModel()">Compute prediction</button>
+
+    <div class="result" id="result-box">
+      <div class="result-label">Model output</div>
+      <div class="result-main" id="result-text"></div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="share-row">
+        <a class="share-btn" id="share-x" href="#" target="_blank">Share on X</a>
+        <button class="share-btn" onclick="copyLink()">Copy link</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>v1.0.0 — not a real model</span>
+      <span>accuracy: undefined</span>
+    </div>
+
+  </div>
+
+  <script>
+    const subs = [
+      "No model predicted 2016. No model predicted 2020. No model predicted 2022. Please hire a field director.",
+      "Campaigns are won by canvassing, fundraising, earned media, and turnout ops. Not sliders.",
+      "The margin on election night will be determined by voter contact, not this widget.",
+      "A favorable generic ballot has never knocked on a door. Consider this.",
+      "Voters are people, not data points. Campaigns are operations, not equations.",
+      "Polling averages, approval ratings, and vibes have a combined predictive record of ¯\\_(ツ)_/¯",
+      "Whoever is running your get-out-the-vote program matters more than any input here.",
+      "The winning campaign will have made more calls, knocked more doors, and raised more money.",
+    ];
+
+    let clickCount = 0;
+
+    function runModel() {
+      clickCount++;
+      const btn = document.getElementById('compute-btn');
+      btn.textContent = 'Computing...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const box = document.getElementById('result-box');
+        const text = document.getElementById('result-text');
+        const sub = document.getElementById('result-sub');
+        const idx = (clickCount - 1) % subs.length;
+
+        text.textContent = "This is not how campaigns and healthy democracies work.";
+        sub.textContent = subs[idx];
+        box.style.display = 'block';
+
+        const tweet = encodeURIComponent("I ran the numbers through the Political Prediction Engine and got a result.\n\nhttps://polscipro3000.example.com");
+        document.getElementById('share-x').href = "https://twitter.com/intent/tweet?text=" + tweet;
+
+        btn.textContent = 'Compute prediction';
+        btn.disabled = false;
+
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 900);
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = event.target;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy link', 2000);
+      });
+    }
+  </script>
+</body>
+</html>
