@@ -4,10 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Political Prediction Engine — PolSci Pro 3000</title>
-  <meta name="description" content="Enter your polling data. Receive wisdom." />
-  <meta property="og:title" content="Political Prediction Engine" />
-  <meta property="og:description" content="47 proprietary models. Advanced AI. Vibes. Enter your data and receive a prediction." />
+
+  <!-- Open Graph / Twitter Card -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://flemingwords.github.io/prediction-machine/" />
+  <meta property="og:title" content="Political Prediction Engine" />
+  <meta property="og:description" content="Enter your polling data. Adjust the sliders. Receive wisdom from 47 proprietary models." />
+  <meta property="og:image" content="https://flemingwords.github.io/prediction-machine/preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Political Prediction Engine" />
+  <meta name="twitter:description" content="Enter your polling data. Adjust the sliders. Receive wisdom from 47 proprietary models." />
+  <meta name="twitter:image" content="https://flemingwords.github.io/prediction-machine/preview.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -40,10 +50,7 @@
       padding: 3rem 1rem 4rem;
     }
 
-    .container {
-      width: 100%;
-      max-width: 560px;
-    }
+    .container { width: 100%; max-width: 560px; }
 
     .header {
       margin-bottom: 2rem;
@@ -71,11 +78,7 @@
       margin-bottom: 6px;
     }
 
-    .subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 300;
-    }
+    .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 300; }
 
     .field {
       background: var(--surface);
@@ -139,10 +142,7 @@
       transition: border-color 0.15s;
     }
 
-    select:focus, input[type="number"]:focus, textarea:focus {
-      border-color: var(--accent);
-    }
-
+    select:focus, input[type="number"]:focus, textarea:focus { border-color: var(--accent); }
     textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
 
     .field-label-plain {
@@ -166,8 +166,6 @@
       cursor: pointer;
       letter-spacing: 0.01em;
       transition: opacity 0.15s, transform 0.1s;
-      position: relative;
-      overflow: hidden;
     }
 
     .compute-btn:hover { opacity: 0.9; }
@@ -321,6 +319,8 @@
   </div>
 
   <script>
+    const SITE_URL = "https://flemingwords.github.io/prediction-machine/";
+
     const subs = [
       "No model predicted 2016. No model predicted 2020. No model predicted 2022. Please hire a field director.",
       "Campaigns are won by canvassing, fundraising, earned media, and turnout ops. Not sliders.",
@@ -350,18 +350,17 @@
         sub.textContent = subs[idx];
         box.style.display = 'block';
 
-        const tweet = encodeURIComponent("I ran the numbers through the Political Prediction Engine and got a result.\n\nhttps://polscipro3000.example.com");
-        document.getElementById('share-x').href = "https://twitter.com/intent/tweet?text=" + tweet;
+        const tweetText = encodeURIComponent("I entered all my polling data into the Political Prediction Engine and ran the model.\n\nThe result was illuminating.\n\n" + SITE_URL);
+        document.getElementById('share-x').href = "https://twitter.com/intent/tweet?text=" + tweetText;
 
         btn.textContent = 'Compute prediction';
         btn.disabled = false;
-
         box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 900);
     }
 
     function copyLink() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
+      navigator.clipboard.writeText(SITE_URL).then(() => {
         const btn = event.target;
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = 'Copy link', 2000);
